@@ -45,7 +45,7 @@ export const ThreatTicker = () => {
   const currentAlert = alerts[tickerIndex];
 
   return (
-    <div className="bg-rose-50 dark:bg-gradient-to-r dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-b border-rose-200 dark:border-rose-500/20 text-xs py-2 px-4 transition-all relative z-50 text-slate-800 dark:text-slate-300">
+    <div className="bg-rose-50 dark:bg-gradient-to-r dark:from-[#000000] dark:via-[#080d1a] dark:to-[#000000] border-b border-rose-200 dark:border-[#00e5ff]/20 text-xs py-2 px-4 transition-all relative z-50 text-slate-800 dark:text-slate-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         
         {/* Left Indicator */}
@@ -68,7 +68,7 @@ export const ThreatTicker = () => {
           <span className="text-slate-800 dark:text-slate-200 hover:underline">{currentAlert.text}</span>
           <Link
             to={currentAlert.link}
-            className="ml-2 text-teal-700 dark:text-teal-400 hover:text-teal-900 dark:hover:text-teal-300 underline font-bold inline-flex items-center gap-0.5"
+            className="ml-2 text-teal-700 dark:text-[#00e5ff] hover:text-teal-900 dark:hover:text-[#c084fc] underline font-bold inline-flex items-center gap-0.5"
           >
             Investigate
           </Link>

@@ -7,25 +7,53 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+      },
       colors: {
+        cyber: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          cyan: '#00e5ff',
+          blue: '#38bdf8',
+          purple: '#a855f7',
+          violet: '#8b5cf6',
+          indigo: '#6366f1',
+          neon: '#00e5ff',
+          glowCyan: 'rgba(0, 229, 255, 0.45)',
+          glowPurple: 'rgba(168, 85, 247, 0.45)',
+        },
+        obsidian: {
+          pitch: '#000000',
+          void: '#040711',
+          card: '#080d1a',
+          950: '#050814',
+          900: '#090e1e',
+          850: '#0f172e',
+          800: '#15203d',
+          700: '#1f2e54',
+          600: '#2d4072',
+        },
         brand: {
           50: '#f0fdfa',
           100: '#ccfbf1',
           200: '#99f6e4',
           300: '#5eead4',
           400: '#2dd4bf',
-          500: '#0d9488', // Teal
+          500: '#0d9488',
           600: '#0f766e',
           700: '#115e59',
           800: '#134e4a',
           900: '#042f2e',
         },
-        navy: {
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#090d16',
-        }
-      }
+      },
     },
   },
   plugins: [],

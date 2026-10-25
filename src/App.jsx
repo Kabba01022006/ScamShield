@@ -1,91 +1,58 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { ScamProvider } from './context/ScamContext';
+
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-// import { ThreatTicker } from './components/ThreatTicker';
 
-// Pages
 import { HomePage } from './pages/HomePage';
-import { LoginPage } from './pages/LoginPage';
-import { ReportPage } from './pages/ReportPage';
-import { SearchPage } from './pages/SearchPage';
-import { DatabasePage } from './pages/DatabasePage';
-import { ScamDetailPage } from './pages/ScamDetailPage';
-import { AboutPage } from './pages/AboutPage';
-import { NotFoundPage } from './pages/NotFoundPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { AiAnalyzerPage } from './pages/AiAnalyzerPage';
+import { DatabasePage } from './pages/DatabasePage';
+import { SearchPage } from './pages/SearchPage';
+import { ReportPage } from './pages/ReportPage';
+import { AboutPage } from './pages/AboutPage';
+import { LoginPage } from './pages/LoginPage';
+import { ScamDetailPage } from './pages/ScamDetailPage';
 import { ThreatMapPage } from './pages/ThreatMapPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
-// ScamShield AI v2.5 - Production Build Trigger
-// Scroll to top on route change
-function ScrollToTop() {
-  const { pathname, search } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname, search]);
-
-  return null;
-}
-
-// Global Toast Banner for Auth or System Alerts
-function GlobalAlertBanner() {
-  const { authNotification, clearNotification } = useAuth();
-
-  if (!authNotification) return null;
-
-  return (
-    <aside aria-label="Alerts" className="fixed bottom-5 right-5 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
-      <div className="bg-slate-900 text-emerald-300 dark:bg-slate-900 dark:text-emerald-300 px-4 py-3 rounded-2xl border border-emerald-500/40 shadow-2xl flex items-center gap-3 text-xs sm:text-sm font-medium backdrop-blur-md">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-        <span className="text-white font-semibold">{authNotification}</span>
-        <button
-          onClick={clearNotification}
-          className="ml-2 text-slate-400 hover:text-white font-bold text-xs p-1"
-        >
-          ✕
-        </button>
-      </div>
-    </aside>
-  );
-}
-
-export function App() {
+export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <ScamProvider>
-          <Router>
-            <ScrollToTop />
-            <div className="flex flex-col min-h-screen bg-white dark:bg-[#090d16] text-slate-900 dark:text-slate-100 selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-950 transition-colors duration-200">
-              {/* <ThreatTicker /> */}
+          <BrowserRouter>
+            <div className="min-h-screen flex flex-col bg-slate-50/80 dark:bg-[#000000] text-slate-900 dark:text-slate-100 transition-colors cyber-grid-pattern relative">
+              {/* Cyber Neon Lighting Meshes */}
+              <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-[#a855f7]/15 via-[#00e5ff]/12 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+              <div className="fixed bottom-0 right-0 w-[550px] h-[350px] bg-gradient-to-tl from-[#00e5ff]/12 via-[#a855f7]/10 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
+              <div className="fixed top-1/3 -left-24 w-[400px] h-[400px] bg-[#a855f7]/8 rounded-full blur-3xl pointer-events-none -z-10" />
+
               <Navbar />
-              <main className="flex-1">
+              <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/map" element={<ThreatMapPage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/analyzer" element={<AiAnalyzerPage />} />
                   <Route path="/analyze" element={<AiAnalyzerPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/report" element={<ReportPage />} />
-                  <Route path="/search" element={<SearchPage />} />
                   <Route path="/database" element={<DatabasePage />} />
-                  <Route path="/scam/:id" element={<ScamDetailPage />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/report" element={<ReportPage />} />
                   <Route path="/about" element={<AboutPage />} />
-                  {/* 404 Catch-All Route */}
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/scam/:id" element={<ScamDetailPage />} />
+                  <Route path="/map" element={<ThreatMapPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
               <Footer />
-              <GlobalAlertBanner />
             </div>
-          </Router>
+          </BrowserRouter>
         </ScamProvider>
       </AuthProvider>
     </ThemeProvider>
   );
 }
-
-export default App;

@@ -56,7 +56,7 @@ const FAQS = [
 ];
 
 // Shared input className
-const INPUT = 'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-medium';
+const INPUT = 'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium';
 
 // ── COMPONENT ─────────────────────────────────────────────────────────────────
 
@@ -87,12 +87,12 @@ export const AboutPage = () => {
 
       {/* 1 ── HERO */}
       <section className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/30 text-teal-800 dark:text-teal-400 text-xs font-bold">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 dark:bg-[#00e5ff]/10 border border-teal-200 dark:border-[#00e5ff]/30 text-teal-800 dark:text-[#00e5ff] text-xs font-bold">
           <ShieldCheck className="w-3.5 h-3.5" /> Global Cyber Defense Mission
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
           Neutralizing Fraud Through <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-cyan-600 to-sky-600 dark:from-teal-400 dark:via-cyan-300 dark:to-sky-400">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-cyan-600 to-sky-600 dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7]">
             Collective Threat Intelligence
           </span>
         </h1>
@@ -103,7 +103,7 @@ export const AboutPage = () => {
       </section>
 
       {/* 2 ── EMERGENCY PROTOCOL */}
-      <section id="emergency" className="bg-white dark:bg-slate-900/90 border-2 border-rose-300 dark:border-rose-500/30 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6 relative overflow-hidden">
+      <section id="emergency" className="bg-white dark:bg-[#080d1a]/95 border-2 border-rose-300 dark:border-rose-500/30 rounded-3xl p-6 sm:p-10 shadow-xl dark:shadow-[0_0_35px_rgba(244,63,94,0.08)] space-y-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/5 blur-3xl pointer-events-none rounded-full" />
 
         <div className="border-b border-slate-100 dark:border-slate-800 pb-5 space-y-2">
@@ -127,7 +127,7 @@ export const AboutPage = () => {
                 className={`p-3.5 rounded-2xl text-left text-xs font-bold flex flex-col gap-2 border transition-all ${
                   active
                     ? 'bg-rose-50 border-rose-300 text-rose-800 shadow-sm dark:bg-rose-500/15 dark:border-rose-500 dark:text-rose-300'
-                    : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'bg-slate-50 dark:bg-[#040711] border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${active ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}`} />
@@ -138,7 +138,7 @@ export const AboutPage = () => {
         </div>
 
         {/* Step Checklist */}
-        <div className="bg-slate-50 dark:bg-slate-950/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="bg-slate-50 dark:bg-[#040711] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
@@ -155,7 +155,7 @@ export const AboutPage = () => {
                   className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
                     done
                       ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30 text-slate-400 line-through'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm'
+                      : 'bg-white dark:bg-[#080d1a] border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm'
                   }`}
                 >
                   {done
@@ -176,7 +176,7 @@ export const AboutPage = () => {
       {/* 3 ── CORE VALUES */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {VALUES.map(({ icon: Icon, color, title, desc }) => (
-          <div key={title} className="bg-white dark:bg-slate-900/70 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+          <div key={title} className="bg-white dark:bg-[#080d1a]/90 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:dark:border-[#00e5ff]/30 space-y-3 shadow-sm transition-all">
             <div className={`w-10 h-10 rounded-xl bg-${color}-50 dark:bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 flex items-center justify-center border border-${color}-200 dark:border-${color}-500/20`}>
               <Icon className="w-5 h-5" />
             </div>
@@ -189,7 +189,7 @@ export const AboutPage = () => {
       {/* 4 ── FAQ ACCORDION */}
       <section id="faq" className="space-y-6 pt-4">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-1.5 text-teal-700 dark:text-teal-400 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 text-teal-700 dark:text-[#00e5ff] text-xs font-bold uppercase tracking-wider">
             <HelpCircle className="w-3.5 h-3.5" /> Knowledge Base
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
@@ -200,11 +200,11 @@ export const AboutPage = () => {
           {FAQS.map((faq, i) => {
             const isOpen = openFaq === i;
             return (
-              <div key={i} className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+              <div key={i} className="bg-white dark:bg-[#080d1a]/90 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
                 <button onClick={() => toggleFaq(i)}
                   className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none">
                   <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">{faq.q}</span>
-                  <div className="p-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-teal-400 shrink-0 ml-3">
+                  <div className="p-1 rounded-lg bg-slate-100 dark:bg-[#040711] text-teal-700 dark:text-[#00e5ff] shrink-0 ml-3">
                     {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
@@ -220,10 +220,10 @@ export const AboutPage = () => {
       </section>
 
       {/* 5 ── CONTACT FORM */}
-      <section className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-10 shadow-xl space-y-6">
+      <section className="bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-[#00e5ff]/20 rounded-3xl p-6 sm:p-10 shadow-xl dark:shadow-[0_0_35px_rgba(0,229,255,0.08)] space-y-6">
         <div className="space-y-2">
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <Mail className="w-5 h-5 text-teal-600 dark:text-teal-400" /> Contact Cyber Threat Intelligence Team
+            <Mail className="w-5 h-5 text-teal-600 dark:text-[#00e5ff]" /> Contact Cyber Threat Intelligence Team
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Research inquiries, threat intelligence data exchange, or platform feedback.
@@ -264,11 +264,11 @@ export const AboutPage = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-              <a href="mailto:intelligence@scamshield.ai" className="text-xs text-teal-700 dark:text-teal-400 hover:underline font-mono font-bold">
+              <a href="mailto:intelligence@scamshield.ai" className="text-xs text-teal-700 dark:text-[#00e5ff] hover:text-[#c084fc] hover:underline font-mono font-bold">
                 Direct dispatch: intelligence@scamshield.ai
               </a>
               <button type="submit"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-600/20 active:scale-[0.98]">
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:opacity-95 text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00e5ff]/20 active:scale-[0.98]">
                 <Send className="w-4 h-4" /> Transmit Message
               </button>
             </div>

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useScams } from '../context/ScamContext';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 export const ReportPage = () => {
   const navigate = useNavigate();
@@ -92,13 +93,14 @@ export const ReportPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
 
-    const newReport = addReport({
+    // 1. Add to local community feed state (localStorage)
+    addReport({
       scamType: formData.scamType,
       identifier: formData.identifier.trim(),
       secondaryIdentifier: formData.secondaryIdentifier.trim(),
@@ -111,7 +113,27 @@ export const ReportPage = () => {
       proofFileName: proofFile ? proofFile.name : null
     });
 
-    setSuccessMessage('Scam threat signature successfully published! Redirecting to database...');
+    // 2. Automatically index phone numbers and emails into MySQL threat intelligence database
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scamType: formData.scamType,
+          identifier: formData.identifier.trim(),
+          secondaryIdentifier: formData.secondaryIdentifier.trim(),
+          title: formData.title.trim(),
+          description: formData.description.trim(),
+          threatLevel: formData.threatLevel
+        })
+      });
+      const data = await response.json();
+      console.log('Threat database indexed:', data);
+    } catch (err) {
+      console.warn('Backend database report sync error:', err.message);
+    }
+
+    setSuccessMessage('Scam threat signature and identifiers registered into the cyber fraud database!');
 
     setTimeout(() => {
       navigate('/database');
@@ -149,7 +171,7 @@ export const ReportPage = () => {
       </div>
 
       {/* Main Form Container */}
-      <div className="bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+      <div className="bg-white dark:bg-[#080d1a]/95 backdrop-blur-xl border border-slate-200/90 dark:border-cyan-500/20 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
         
         {/* Success Alert Banner */}
         {successMessage && (
@@ -160,15 +182,15 @@ export const ReportPage = () => {
         )}
 
         {/* Template Helper Button */}
-        <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs">
+        <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-[#040711] rounded-2xl border border-slate-200 dark:border-white/10 text-xs">
           <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5 font-medium">
-            <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <Sparkles className="w-4 h-4 text-cyan-600 dark:text-[#00e5ff]" />
             Need a structured sample format?
           </span>
           <button
             type="button"
             onClick={handleAutofillTemplate}
-            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-teal-700 dark:text-teal-300 font-bold border border-slate-200 dark:border-slate-700 transition-colors shadow-sm"
+            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-[#080d1a] dark:hover:bg-white/10 text-cyan-700 dark:text-[#00e5ff] font-bold border border-slate-200 dark:border-cyan-500/30 transition-colors shadow-sm font-mono"
           >
             ⚡ Load Threat Template
           </button>
@@ -188,7 +210,7 @@ export const ReportPage = () => {
                 name="scamType"
                 value={formData.scamType}
                 onChange={handleInputChange}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 font-medium"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium"
               >
                 {scamTypes.map((type) => (
                   <option key={type} value={type}>
@@ -212,7 +234,7 @@ export const ReportPage = () => {
                 name="threatLevel"
                 value={formData.threatLevel}
                 onChange={handleInputChange}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 font-medium"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium"
               >
                 <option value="Critical">Critical (Financial Drain / Account Takeover)</option>
                 <option value="High">High (Phishing Link / Credential Harvesting)</option>
@@ -233,9 +255,9 @@ export const ReportPage = () => {
               value={formData.identifier}
               onChange={handleInputChange}
               placeholder="e.g. +1 (800) 555-0199, usps-redelivery-portal.org, support@irs-warrant.net"
-              className={`w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border ${
+              className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#040711] border ${
                 errors.identifier ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-              } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-mono`}
+              } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-mono`}
             />
             <p className="text-[11px] text-slate-500">
               This exact identifier will be indexed for instant community search matches.
@@ -258,7 +280,7 @@ export const ReportPage = () => {
               value={formData.secondaryIdentifier}
               onChange={handleInputChange}
               placeholder="e.g. Impersonating Chase Bank Fraud Dept, Telegram: @AdminEscrow"
-              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20"
             />
           </div>
 
@@ -274,9 +296,9 @@ export const ReportPage = () => {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="e.g. Fake delivery text demanding credit card for redelivery fee"
-                className={`w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border ${
+                className={`w-full px-4 py-2.5 bg-slate-50 dark:bg-[#040711] border ${
                   errors.title ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500`}
+                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20`}
               />
               {errors.title && (
                 <p className="text-xs text-rose-500 flex items-center gap-1 font-medium">
@@ -294,7 +316,7 @@ export const ReportPage = () => {
                 name="incidentDate"
                 value={formData.incidentDate}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-teal-500"
+                className="w-full px-3 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20"
               />
               {errors.incidentDate && (
                 <p className="text-xs text-rose-500 flex items-center gap-1 font-medium">
@@ -315,9 +337,9 @@ export const ReportPage = () => {
               value={formData.description}
               onChange={handleInputChange}
               placeholder="Describe the tactics: How did they contact you? What payment or information was demanded? What fake threats were made?..."
-              className={`w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border ${
+              className={`w-full px-4 py-3 bg-slate-50 dark:bg-[#040711] border ${
                 errors.description ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-              } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 leading-relaxed font-medium`}
+              } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 leading-relaxed font-medium`}
             />
             {errors.description && (
               <p className="text-xs text-rose-500 flex items-center gap-1 font-medium">
@@ -333,8 +355,8 @@ export const ReportPage = () => {
             </label>
 
             {!proofFile ? (
-              <label className="border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-teal-500 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-50 hover:bg-slate-100 dark:bg-slate-950/60 dark:hover:bg-slate-950">
-                <UploadCloud className="w-8 h-8 text-teal-600 dark:text-teal-400 mb-2" />
+              <label className="border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-[#00e5ff] rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors bg-slate-50 hover:bg-slate-100 dark:bg-[#040711] dark:hover:bg-[#080d1a]">
+                <UploadCloud className="w-8 h-8 text-teal-600 dark:text-[#00e5ff] mb-2" />
                 <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
                   Select screenshot, email header, or message capture
                 </span>
@@ -349,7 +371,7 @@ export const ReportPage = () => {
                 />
               </label>
             ) : (
-              <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
+              <div className="p-4 bg-slate-50 dark:bg-[#040711] rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 truncate">
                   {proofPreviewUrl ? (
                     <img
@@ -358,7 +380,7 @@ export const ReportPage = () => {
                       className="w-12 h-12 rounded-lg object-cover border border-slate-200 dark:border-slate-700"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-teal-600 dark:text-teal-400">
+                    <div className="w-12 h-12 rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-teal-600 dark:text-[#00e5ff]">
                       <FileText className="w-6 h-6" />
                     </div>
                   )}
@@ -366,7 +388,7 @@ export const ReportPage = () => {
                     <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                       {proofFile.name}
                     </p>
-                    <p className="text-[11px] text-teal-700 dark:text-teal-400 font-mono font-semibold">
+                    <p className="text-[11px] text-teal-700 dark:text-[#00e5ff] font-mono font-semibold">
                       {(proofFile.size / 1024).toFixed(1)} KB • Verified Local Evidence
                     </p>
                   </div>
@@ -385,8 +407,8 @@ export const ReportPage = () => {
           </div>
 
           {/* Privacy Note */}
-          <div className="text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-2 bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 font-medium">
-            <HelpCircle className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
+          <div className="text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-2 bg-slate-50 dark:bg-[#040711] p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 font-medium">
+            <HelpCircle className="w-4 h-4 text-teal-600 dark:text-[#00e5ff] shrink-0 mt-0.5" />
             <span>
               <strong>PII Redaction:</strong> Never include personal banking credentials, credit card numbers, or government IDs. Redact private information prior to submission.
             </span>
@@ -404,7 +426,7 @@ export const ReportPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-teal-600/25 active:scale-[0.98] disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00e5ff]/25 active:scale-[0.98] disabled:opacity-50"
             >
               <PlusCircle className="w-4 h-4 stroke-[2.5]" />
               <span>{isSubmitting ? 'Publishing Threat Signature...' : 'Publish Scam Warning'}</span>

@@ -90,27 +90,27 @@ export const LoginPage = () => {
   if (isAuthenticated && currentUser) {
     return (
       <div className="max-w-md mx-auto px-4 py-16">
-        <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center space-y-6 shadow-xl">
-          <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 dark:bg-teal-500/20 dark:text-teal-400 dark:border-teal-500/30 flex items-center justify-center mx-auto shadow-inner">
+        <div className="bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-[#00e5ff]/20 rounded-3xl p-8 text-center space-y-6 shadow-xl dark:shadow-[0_0_30px_rgba(0,229,255,0.08)]">
+          <div className="w-16 h-16 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 dark:bg-[#00e5ff]/15 dark:text-[#00e5ff] dark:border-[#00e5ff]/30 flex items-center justify-center mx-auto shadow-inner">
             <ShieldCheck className="w-8 h-8" />
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Active Sentinel Session</h2>
             <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">
-              Signed in as <span className="text-teal-700 dark:text-teal-400 font-bold">{currentUser.name}</span> ({currentUser.email})
+              Signed in as <span className="text-teal-700 dark:text-[#00e5ff] font-bold">{currentUser.name}</span> ({currentUser.email})
             </p>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-950/70 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-left space-y-2.5">
+          <div className="bg-slate-50 dark:bg-[#040711] p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-left space-y-2.5">
             <div className="flex justify-between">
               <span className="text-slate-500">Security Clearance:</span>
-              <span className="text-teal-800 dark:text-teal-300 font-bold font-mono">{currentUser.role || 'Community Sentinel'}</span>
+              <span className="text-teal-800 dark:text-[#a855f7] font-bold font-mono">{currentUser.role || 'Community Sentinel'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500">Threat Submission Node:</span>
-              <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Authorized / Active
+              <span className="text-emerald-700 dark:text-[#00e5ff] font-bold flex items-center gap-1 font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-pulse"></span> Authorized / Active
               </span>
             </div>
           </div>
@@ -118,13 +118,13 @@ export const LoginPage = () => {
           <div className="flex flex-col gap-3">
             <Link
               to="/"
-              className="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-sm transition-colors text-center shadow-md shadow-teal-600/20"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] text-black font-extrabold text-sm transition-all text-center shadow-lg shadow-[#00e5ff]/20 hover:opacity-95 active:scale-[0.98]"
             >
               Return to Defense Dashboard
             </Link>
             <button
               onClick={logout}
-              className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 dark:bg-slate-800 dark:hover:bg-rose-500/20 dark:text-slate-300 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-colors"
+              className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 dark:bg-[#040711] dark:hover:bg-rose-500/20 dark:text-slate-300 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-800 text-xs font-bold transition-colors"
             >
               Terminate Session (Sign Out)
             </button>
@@ -136,14 +136,15 @@ export const LoginPage = () => {
 
   return (
     <div className="max-w-md mx-auto px-4 py-12">
-      <div className="bg-white dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6 relative overflow-hidden">
+      <div className="bg-white dark:bg-[#080d1a]/95 backdrop-blur-md border border-slate-200/90 dark:border-[#00e5ff]/20 rounded-3xl p-6 sm:p-8 shadow-xl dark:shadow-[0_0_35px_rgba(0,229,255,0.08)] space-y-6 relative overflow-hidden">
         
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 blur-2xl pointer-events-none rounded-full" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[#a855f7]/15 blur-2xl pointer-events-none rounded-full" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#00e5ff]/10 blur-2xl pointer-events-none rounded-full" />
 
         {/* Header with icon */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-500/15 text-teal-700 dark:text-teal-400 flex items-center justify-center mx-auto border border-teal-200 dark:border-teal-500/30 shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-[#00e5ff]/15 text-teal-700 dark:text-[#00e5ff] flex items-center justify-center mx-auto border border-teal-200 dark:border-[#00e5ff]/30 shadow-inner">
             <Fingerprint className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -157,7 +158,7 @@ export const LoginPage = () => {
         </div>
 
         {/* Tab Toggle Switch */}
-        <div className="flex p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="flex p-1 bg-slate-100 dark:bg-[#040711] rounded-xl border border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => {
@@ -166,7 +167,7 @@ export const LoginPage = () => {
             }}
             className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
               !isSignUp
-                ? 'bg-teal-600 text-white dark:bg-teal-500 dark:text-slate-950 shadow-sm'
+                ? 'bg-teal-600 text-white dark:bg-gradient-to-r dark:from-[#00e5ff] dark:to-[#a855f7] dark:text-black dark:font-black shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -180,7 +181,7 @@ export const LoginPage = () => {
             }}
             className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
               isSignUp
-                ? 'bg-teal-600 text-white dark:bg-teal-500 dark:text-slate-950 shadow-sm'
+                ? 'bg-teal-600 text-white dark:bg-gradient-to-r dark:from-[#00e5ff] dark:to-[#a855f7] dark:text-black dark:font-black shadow-sm'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -215,9 +216,9 @@ export const LoginPage = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="e.g. Alex Morgan"
-                  className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border ${
+                  className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-[#040711] border ${
                     errors.name ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-                  } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-medium`}
+                  } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium`}
                 />
               </div>
               {errors.name && (
@@ -243,9 +244,9 @@ export const LoginPage = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="sentinel@scamshield.ai"
-                className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border ${
+                className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-[#040711] border ${
                   errors.email ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-medium`}
+                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium`}
               />
             </div>
             {errors.email && (
@@ -272,9 +273,9 @@ export const LoginPage = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="••••••••"
-                className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border ${
+                className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-[#040711] border ${
                   errors.password ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-medium`}
+                } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium`}
               />
             </div>
             {errors.password && (
@@ -300,9 +301,9 @@ export const LoginPage = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="••••••••"
-                  className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border ${
+                  className={`w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-[#040711] border ${
                     errors.confirmPassword ? 'border-rose-500' : 'border-slate-300 dark:border-slate-800'
-                  } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 font-medium`}
+                  } rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium`}
                 />
               </div>
               {errors.confirmPassword && (
@@ -326,7 +327,7 @@ export const LoginPage = () => {
                 });
                 setErrors({});
               }}
-              className="text-[11px] text-slate-800 hover:text-black dark:text-slate-300 dark:hover:text-white hover:underline inline-flex items-center gap-1 font-bold"
+              className="text-[11px] text-slate-800 hover:text-black dark:text-[#00e5ff] dark:hover:text-[#c084fc] hover:underline inline-flex items-center gap-1 font-bold"
             >
               ⚡ Fill with Verified Sentinel Profile
             </button>
@@ -335,7 +336,7 @@ export const LoginPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-slate-900/10 active:scale-[0.98]"
+            className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-black dark:bg-gradient-to-r dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7] text-white dark:text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-slate-900/10 dark:shadow-[0_0_25px_rgba(0,229,255,0.25)] hover:opacity-95 active:scale-[0.98]"
           >
             <span>{isSignUp ? 'Enroll Sentinel Profile' : 'Authenticate Session'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -343,8 +344,8 @@ export const LoginPage = () => {
         </form>
 
         {/* Security Standard Badge */}
-        <div className="p-3.5 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-2.5 font-medium">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+        <div className="p-3.5 bg-slate-50 dark:bg-[#040711] rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-2.5 font-medium">
+          <ShieldCheck className="w-4 h-4 text-[#00e5ff] shrink-0 mt-0.5" />
           <p>
             <strong className="text-slate-900 dark:text-slate-200">Zero-Knowledge Session Protocol:</strong> Your credentials are validated locally with zero transmission of raw secrets.
           </p>

@@ -89,19 +89,19 @@ export const ScamDetailPage = () => {
         <span className="text-xs text-slate-500 font-mono font-bold">REF: #{scam.id.toUpperCase()}</span>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-8">
+      <div className="bg-white dark:bg-[#080d1a]/95 border border-slate-200/90 dark:border-[#00e5ff]/20 rounded-3xl p-6 sm:p-8 space-y-8 shadow-xl dark:shadow-[0_0_35px_rgba(0,229,255,0.08)]">
 
         {/* Type badge, threat level, date, title, reporter */}
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-teal-300">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-800 dark:bg-[#00e5ff]/10 dark:text-[#00e5ff] dark:border dark:border-[#00e5ff]/30">
               {TYPE_ICONS[scam.scamType] || DEFAULT_ICON}
               {scam.scamType}
             </span>
             <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold border ${
               scam.threatLevel === 'Critical'
-                ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-400'
-                : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400'
+                ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30'
+                : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30'
             }`}>
               {scam.threatLevel || 'High'} Risk
             </span>
@@ -120,23 +120,23 @@ export const ScamDetailPage = () => {
         </div>
 
         {/* Reported identifier + copy button */}
-        <div className="bg-slate-50 dark:bg-slate-950 rounded-2xl p-4 sm:p-5 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-slate-50 dark:bg-[#040711] rounded-2xl p-4 sm:p-5 border-2 border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block mb-1">
               Reported Website / Email / Number:
             </span>
-            <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-mono text-base font-extrabold">
-              <ShieldAlert className="w-5 h-5 shrink-0" />
+            <div className="flex items-center gap-2 text-amber-800 dark:text-[#00e5ff] font-mono text-base font-extrabold">
+              <ShieldAlert className="w-5 h-5 shrink-0 text-rose-500" />
               <span className="break-all">{scam.identifier}</span>
             </div>
           </div>
           <button
             onClick={handleCopyIdentifier}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 text-xs font-bold border border-slate-200 dark:border-slate-700 shrink-0"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-[#080d1a] hover:dark:bg-[#040711] dark:text-white text-xs font-bold border border-slate-200 dark:border-slate-700 shrink-0 transition-colors"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-600" /> Copied!
+                <Check className="w-3.5 h-3.5 text-[#00e5ff]" /> Copied!
               </>
             ) : (
               <>
@@ -147,9 +147,9 @@ export const ScamDetailPage = () => {
         </div>
 
         {/* "This happened to me too" */}
-        <div className="bg-slate-50 dark:bg-slate-950/40 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-slate-50 dark:bg-[#040711] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-sm">
-            <div className="w-11 h-11 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center font-black text-lg shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-slate-900 text-white dark:bg-gradient-to-r dark:from-[#00e5ff] dark:to-[#a855f7] dark:text-black flex items-center justify-center font-black text-lg shrink-0 shadow-sm">
               {scam.meTooCount || 1}
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400">
@@ -158,8 +158,10 @@ export const ScamDetailPage = () => {
           </div>
           <button
             onClick={handleMeTooClick}
-            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 ${
-              isVoted ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-black dark:bg-white dark:text-slate-950 text-white'
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+              isVoted
+                ? 'bg-emerald-600 text-white dark:bg-[#00e5ff] dark:text-black font-black'
+                : 'bg-slate-900 hover:bg-black dark:bg-gradient-to-r dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7] dark:text-black font-black text-white hover:opacity-95'
             }`}
           >
             <ThumbsUp className={`w-4 h-4 ${isVoted ? 'fill-current' : ''}`} />
@@ -168,7 +170,7 @@ export const ScamDetailPage = () => {
         </div>
 
         {meTooMessage && (
-          <div className="p-3.5 bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/15 rounded-xl text-emerald-900 dark:text-emerald-300 text-xs font-bold flex items-center gap-2">
+          <div className="p-3.5 bg-emerald-50 border border-emerald-200 dark:bg-[#00e5ff]/10 dark:border-[#00e5ff]/30 rounded-xl text-emerald-900 dark:text-[#00e5ff] text-xs font-bold flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 shrink-0" />
             {meTooMessage}
           </div>
@@ -177,10 +179,10 @@ export const ScamDetailPage = () => {
         {/* Full description */}
         <div className="space-y-3">
           <h2 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <FileText className="w-4 h-4 text-teal-600" />
+            <FileText className="w-4 h-4 text-teal-600 dark:text-[#00e5ff]" />
             What Happened
           </h2>
-          <div className="bg-slate-50 dark:bg-slate-950/60 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm text-slate-800 dark:text-slate-200 whitespace-pre-line">
+          <div className="bg-slate-50 dark:bg-[#040711] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">
             {scam.description}
           </div>
         </div>
@@ -189,12 +191,12 @@ export const ScamDetailPage = () => {
         {scam.redFlags?.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-600" />
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               Red Flags to Watch For
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {scam.redFlags.map((flag, idx) => (
-                <div key={idx} className="bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                <div key={idx} className="bg-slate-50 dark:bg-[#040711] border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
                   <span className="w-2 h-2 rounded-full bg-rose-500 mt-1 shrink-0" />
                   {flag}
                 </div>
@@ -205,8 +207,8 @@ export const ScamDetailPage = () => {
 
         {/* Prevention tip, if provided */}
         {scam.preventionTip && (
-          <div className="bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/30 p-5 rounded-2xl space-y-2">
-            <h3 className="text-sm font-bold text-teal-900 dark:text-teal-300 flex items-center gap-2">
+          <div className="bg-teal-50 dark:bg-[#00e5ff]/10 border border-teal-200 dark:border-[#00e5ff]/30 p-5 rounded-2xl space-y-2">
+            <h3 className="text-sm font-bold text-teal-900 dark:text-[#00e5ff] flex items-center gap-2">
               <ShieldCheck className="w-4 h-4" />
               How to Protect Yourself
             </h3>
@@ -216,11 +218,11 @@ export const ScamDetailPage = () => {
 
         {/* Footer navigation */}
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <Link to="/database" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-xs font-bold">
+          <Link to="/database" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#040711] dark:border dark:border-slate-800 dark:hover:border-[#00e5ff]/30 dark:text-slate-200 text-xs font-bold transition-all">
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to Database
           </Link>
-          <Link to="/report" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:text-slate-950 text-white text-xs font-bold">
+          <Link to="/report" className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black dark:bg-gradient-to-r dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7] dark:text-black text-white text-xs font-black shadow-md shadow-[#00e5ff]/20 hover:opacity-95 transition-all">
             Report Another Scam
           </Link>
         </div>

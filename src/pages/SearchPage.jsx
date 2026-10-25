@@ -80,10 +80,10 @@ export const SearchPage = () => {
       <div className="max-w-3xl mx-auto">
         <form 
           onSubmit={handleSearchSubmit}
-          className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-700 p-2 shadow-xl focus-within:border-slate-950 dark:focus-within:border-white focus-within:ring-4 focus-within:ring-slate-900/5 transition-all"
+          className="relative flex items-center bg-white dark:bg-[#080d1a]/95 rounded-2xl border-2 border-slate-200 dark:border-cyan-500/20 p-2 shadow-xl focus-within:border-cyan-500 dark:focus-within:border-[#00e5ff] focus-within:ring-4 focus-within:ring-cyan-500/10 transition-all backdrop-blur-xl"
         >
-          <div className="pl-3 text-slate-400 flex items-center">
-            <Search className="w-5 h-5 text-slate-400" />
+          <div className="pl-3 text-cyan-600 dark:text-[#00e5ff] flex items-center">
+            <Search className="w-5 h-5 text-cyan-600 dark:text-[#00e5ff]" />
           </div>
 
           <input
@@ -99,7 +99,7 @@ export const SearchPage = () => {
             <button
               type="button"
               onClick={handleClear}
-              className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg mr-1 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg mr-1 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
               title="Clear search"
             >
               <X className="w-4 h-4" />
@@ -108,7 +108,7 @@ export const SearchPage = () => {
 
           <button
             type="submit"
-            className="px-7 py-3 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-sm flex items-center gap-2 transition-all shadow-md shadow-slate-900/10 active:scale-[0.98] shrink-0"
+            className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-sm flex items-center gap-2 transition-all shadow-md shadow-[#00e5ff]/25 active:scale-[0.98] shrink-0"
           >
             <span>Search</span>
           </button>
@@ -116,7 +116,7 @@ export const SearchPage = () => {
 
         {/* Quick Sample Queries */}
         <div className="flex flex-wrap items-center gap-2 mt-3 text-xs text-slate-500 dark:text-slate-400 justify-center">
-          <span className="font-bold text-slate-700 dark:text-slate-400">Quick Test Searches:</span>
+          <span className="font-bold text-slate-700 dark:text-slate-400 font-mono">Quick Test Searches:</span>
           {['digital arrest', 'electricity', 'army', 'telegram', 'stock', 'loan'].map((tag) => (
             <button
               key={tag}
@@ -124,7 +124,7 @@ export const SearchPage = () => {
                 setQuery(tag);
                 setSearchParams({ q: tag });
               }}
-              className="px-3 py-1 rounded-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors shadow-sm font-semibold"
+              className="px-3 py-1 rounded-full bg-white dark:bg-[#040711] hover:bg-slate-50 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 transition-colors shadow-sm font-semibold"
             >
               "{tag}"
             </button>
@@ -157,9 +157,9 @@ export const SearchPage = () => {
 
                   <Link
                     to="/report"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 text-xs font-bold hover:bg-black transition-colors shrink-0 shadow-sm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-xs transition-all shrink-0 shadow-md shadow-[#00e5ff]/25"
                   >
-                    <PlusCircle className="w-3.5 h-3.5" />
+                    <PlusCircle className="w-3.5 h-3.5 stroke-[2.5]" />
                     Add Additional Report
                   </Link>
                 </div>
@@ -174,14 +174,14 @@ export const SearchPage = () => {
               </div>
             ) : (
               /* No Match Empty State */
-              <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-[0_4px_25px_-4px_rgba(0,0,0,0.05)]">
+              <div className="max-w-2xl mx-auto bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-cyan-500/20 rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-xl backdrop-blur-xl">
                 
                 <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-400 flex items-center justify-center mx-auto shadow-inner">
                   <AlertTriangle className="w-8 h-8" />
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white">
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white font-display">
                     No Reports Found for "{query}"
                   </h3>
                   <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed font-medium">
@@ -190,7 +190,7 @@ export const SearchPage = () => {
                 </div>
 
                 {/* Important Advisory */}
-                <div className="bg-slate-50 dark:bg-slate-950/80 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-left text-slate-700 dark:text-slate-300 space-y-2.5">
+                <div className="bg-slate-50 dark:bg-[#040711] p-5 rounded-2xl border border-slate-200 dark:border-white/10 text-xs text-left text-slate-700 dark:text-slate-300 space-y-2.5">
                   <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-bold">
                     <Info className="w-4 h-4" />
                     <span>Why you should still be vigilant:</span>
@@ -206,15 +206,15 @@ export const SearchPage = () => {
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <Link
                     to="/report"
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-[0.98]"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#00e5ff]/25 transition-all active:scale-[0.98]"
                   >
-                    <PlusCircle className="w-4 h-4" />
+                    <PlusCircle className="w-4 h-4 stroke-[2.5]" />
                     <span>Report This Suspicious Contact</span>
                   </Link>
 
                   <Link
                     to="/database"
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold transition-colors"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white border border-slate-200 dark:border-white/10 text-xs sm:text-sm font-bold transition-colors"
                   >
                     Browse All Incidents
                   </Link>
@@ -227,8 +227,8 @@ export const SearchPage = () => {
           /* Initial Guidance State */
           <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
             
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold">
+            <div className="bg-white dark:bg-[#080d1a]/95 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 dark:hover:border-[#00e5ff]/40 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 dark:bg-[#00e5ff]/15 dark:text-[#00e5ff] flex items-center justify-center font-bold">
                 <Radio className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-950 dark:text-white text-sm">Caller ID Spoofing</h3>
@@ -237,8 +237,8 @@ export const SearchPage = () => {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold">
+            <div className="bg-white dark:bg-[#080d1a]/95 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 dark:hover:border-[#a855f7]/40 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 dark:bg-[#a855f7]/15 dark:text-[#a855f7] flex items-center justify-center font-bold">
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-950 dark:text-white text-sm">Deceptive Phishing URLs</h3>
@@ -247,8 +247,8 @@ export const SearchPage = () => {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold">
+            <div className="bg-white dark:bg-[#080d1a]/95 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-900 dark:hover:border-[#00e5ff]/40 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 dark:bg-[#00e5ff]/15 dark:text-[#00e5ff] flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-950 dark:text-white text-sm">UPI & QR Fraud</h3>
