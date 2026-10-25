@@ -1,279 +1,184 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
-  ShieldCheck, HelpCircle, ChevronDown, ChevronUp, Mail, Send,
-  Sparkles, CheckCircle2, Users, Lock, AlertTriangle, Flame,
-  CreditCard, PhoneCall, CheckSquare, Square
+  ShieldCheck, PhoneCall, ChevronDown, Mail, ArrowRight,
+  Search, Cpu, FilePlus2, Landmark, Siren, Smartphone, Briefcase,
+  TrendingUp, Package,
 } from 'lucide-react';
 
-// ── STATIC DATA ───────────────────────────────────────────────────────────────
+// ── CONTENT (edit text here, no need to touch the layout below) ──────────────
 
-const TABS = [
-  { id: 'bank',     label: 'Bank / Card Compromised',    icon: CreditCard    },
-  { id: 'money',    label: 'Sent Money / Wire',           icon: PhoneCall     },
-  { id: 'identity', label: 'SSN / Identity Leaked',       icon: Lock          },
-  { id: 'software', label: 'Installed Remote App / Link', icon: AlertTriangle },
+const STEPS = [
+  { icon: Search,   title: 'Check',   desc: 'Search a phone number, email, or link to see if others have reported it.', to: '/search'  },
+  { icon: Cpu,      title: 'Analyze', desc: 'Paste a suspicious message and the AI Scanner shows its risk level and red flags.', to: '/analyze' },
+  { icon: FilePlus2, title: 'Report', desc: 'Got scammed or targeted? Report it so others are warned.', to: '/report' },
 ];
 
-const PROTOCOLS = {
-  bank:     { title: 'Shared Card / Banking Credentials', steps: [
-    { id: 'b1', text: 'Call your bank fraud line immediately (number on the back of your card).' },
-    { id: 'b2', text: 'Cancel card and dispute any unauthorized transactions.' },
-    { id: 'b3', text: 'Change your online banking password and PIN from a safe device.' },
-    { id: 'b4', text: 'Enable SMS alerts for any charge over $0.01.' },
-  ]},
-  money:    { title: 'Sent Funds via Zelle, Wire, or Crypto', steps: [
-    { id: 'm1', text: 'Notify the payment app / bank immediately to report as fraudulent.' },
-    { id: 'm2', text: 'Document all chat logs, transaction IDs, and timestamps.' },
-    { id: 'm3', text: 'File a complaint at reportfraud.ftc.gov.' },
-    { id: 'm4', text: 'Beware of "Recovery Scammers" — they are secondary scams.' },
-  ]},
-  identity: { title: 'Disclosed SSN or Government ID', steps: [
-    { id: 'i1', text: 'Freeze credit at Experian, Equifax, and TransUnion.' },
-    { id: 'i2', text: 'Report identity theft at IdentityTheft.gov.' },
-    { id: 'i3', text: 'Create a ssa.gov account to block unauthorized claim filings.' },
-    { id: 'i4', text: 'Review free credit report at annualcreditreport.com.' },
-  ]},
-  software: { title: 'Clicked Link or Installed Remote Tool', steps: [
-    { id: 's1', text: 'Disconnect immediately from Wi-Fi and mobile data.' },
-    { id: 's2', text: 'Uninstall AnyDesk, TeamViewer, or QuickAssist.' },
-    { id: 's3', text: 'Run a deep anti-malware scan.' },
-    { id: 's4', text: 'Reset all email and banking passwords from a clean device.' },
-  ]},
-};
+const SCAMS = [
+  { icon: Siren,      title: 'Digital Arrest',
+    how:  'Someone posing as police, CBI, or customs says you are "under arrest" on a video call and demands money.',
+    tip:  'No agency arrests people over video call or asks for payment. Hang up and call 1930.' },
+  { icon: Landmark,   title: 'Fake KYC / OTP',
+    how:  'A message says your bank account will be blocked unless you update KYC through a link.',
+    tip:  'Banks never ask for your OTP, PIN, or CVV. Never share them with anyone.' },
+  { icon: Smartphone, title: 'UPI Refund Trick',
+    how:  'A buyer or "support agent" sends a collect request and asks you to enter your PIN to receive money.',
+    tip:  'You never need a PIN to receive money. Entering it only sends money out.' },
+  { icon: Briefcase,  title: 'Task / Part-Time Job',
+    how:  'A WhatsApp or Telegram job pays small amounts at first, then asks you to deposit more to continue.',
+    tip:  'A real job never asks you to pay first. Stop at the first deposit request.' },
+  { icon: TrendingUp, title: 'Fake Investment App',
+    how:  'An app or group promises guaranteed high returns, then blocks withdrawals.',
+    tip:  'No one can guarantee returns. Only use SEBI-registered platforms.' },
+  { icon: Package,    title: 'Fake Courier / Customs',
+    how:  'A call says your parcel is stuck or has illegal items, and asks for a fee or personal details.',
+    tip:  'Check the tracking number on the official courier site. Never pay through a caller\'s link.' },
+];
 
-const VALUES = [
-  { icon: Users,    color: 'teal',   title: 'Distributed Sentinel Network', desc: 'When one person spots a scam SMS or extortion call, immediate indexing protects thousands of subsequent targets.' },
-  { icon: Sparkles, color: 'cyan',   title: 'Instant Cross-Verification',   desc: 'Sub-second querying across numbers, domains, and crypto addresses helps citizens verify before transacting.' },
-  { icon: Lock,     color: 'indigo', title: 'Zero-Knowledge Defense',       desc: 'We strictly isolate personal identity from submitted threat intelligence vectors.' },
+const IF_SCAMMED = [
+  { title: 'Call 1930 right away',          desc: 'The faster you report, the better the chance of freezing the money.' },
+  { title: 'Report at cybercrime.gov.in',   desc: 'File an official complaint with screenshots, numbers, and transaction IDs.' },
+  { title: 'Contact your bank',             desc: 'Ask them to block your card or UPI and flag the transaction.' },
+  { title: 'Secure your accounts',          desc: 'Change passwords and uninstall any remote-access app such as AnyDesk.' },
 ];
 
 const FAQS = [
-  { q: 'Is ScamShieldAI completely free?',             a: 'Yes — 100% free. Anyone can search the database, use the AI analyzer, and submit reports without a subscription.' },
-  { q: 'How are community reports validated?',          a: 'Reports use heuristic categorization and crowd confirmation. Identifiers with repeat reports are auto-flagged with elevated risk markers.' },
-  { q: 'How is personal privacy preserved?',           a: 'Strict privacy-first architecture. No real identity required. Only attacker coordinates and tactics are published.' },
-  { q: 'What should I do after falling for a scam?',   a: 'Use the Emergency Protocol above: call your bank, freeze credit files, file with national cyber authorities, then report here.' },
-  { q: 'Can organizations query threat intelligence?', a: 'Yes — the community database supports structured querying for anti-abuse analysts and security tools.' },
+  { q: 'Is ScamShieldAI free?',
+    a: 'Yes. Searching the database, using the AI Scanner, and submitting reports are all free.' },
+  { q: 'How does the AI Scanner work?',
+    a: 'It checks your message against known scam reports and common scam patterns, then an AI model gives a risk score with the red flags it found.' },
+  { q: 'Can the scanner be wrong?',
+    a: 'Yes. It is a helpful guide, not a guarantee. If something feels off, do not pay or share details, and verify through the official source.' },
+  { q: 'How are community reports checked?',
+    a: 'Reports are categorized automatically, and numbers or emails reported by several people are marked as higher risk.' },
+  { q: 'Is my personal information shared?',
+    a: 'No. Only the scammer\'s details (number, email, link) and tactics are shown. Your identity is never published.' },
+  { q: 'What should I do if I already lost money?',
+    a: 'Call 1930 immediately, then report at cybercrime.gov.in and contact your bank. See the steps above.' },
 ];
 
-// Shared input className
-const INPUT = 'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#040711] border border-slate-300 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 dark:focus:border-[#00e5ff] dark:focus:ring-2 dark:focus:ring-[#00e5ff]/20 font-medium';
+// ── PAGE ─────────────────────────────────────────────────────────────────────
 
-// ── COMPONENT ─────────────────────────────────────────────────────────────────
+const card = 'bg-white dark:bg-[#080d1a]/90 border border-slate-200 dark:border-slate-800 rounded-2xl';
+
+const SectionTitle = ({ title, subtitle }) => (
+  <div className="space-y-1">
+    <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">{title}</h2>
+    {subtitle && <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">{subtitle}</p>}
+  </div>
+);
 
 export const AboutPage = () => {
-  const [openFaq,        setOpenFaq]        = useState(0);
-  const [emergencyTab,   setEmergencyTab]   = useState('bank');
-  const [completedSteps, setCompletedSteps] = useState({});
-  const [form,           setForm]           = useState({ name: '', email: '', subject: '', message: '' });
-  const [sent,           setSent]           = useState(false);
+  const { hash } = useLocation();
 
-  const toggleStep = (id) =>
-    setCompletedSteps(prev => ({ ...prev, [id]: !prev[id] }));
-
-  const toggleFaq = (i) => setOpenFaq(openFaq === i ? null : i);
-
-  const setField = (key) => (e) =>
-    setForm(prev => ({ ...prev, [key]: e.target.value }));
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
-    setSent(true);
-    setTimeout(() => setForm({ name: '', email: '', subject: '', message: '' }), 2000);
-  };
+  // Makes footer links like /about#faq scroll to the right section
+  useEffect(() => {
+    if (!hash) { window.scrollTo(0, 0); return; }
+    const el = document.getElementById(hash.slice(1));
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }, [hash]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div className="max-w-4xl mx-auto py-8 space-y-14">
 
-      {/* 1 ── HERO */}
+      {/* 1. INTRO */}
       <section className="text-center space-y-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 dark:bg-[#00e5ff]/10 border border-teal-200 dark:border-[#00e5ff]/30 text-teal-800 dark:text-[#00e5ff] text-xs font-bold">
-          <ShieldCheck className="w-3.5 h-3.5" /> Global Cyber Defense Mission
+          <ShieldCheck className="w-3.5 h-3.5" /> About ScamShieldAI
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-          Neutralizing Fraud Through <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-cyan-600 to-sky-600 dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7]">
-            Collective Threat Intelligence
-          </span>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Spot scams before they cost you
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium">
-          Fraud rings profit off asymmetrical information — catching people off-guard before warnings spread.
-          ScamShieldAI eliminates that gap by turning every encounter into community-wide immunity.
+          ScamShieldAI is a free, community-powered tool for people in India. Check suspicious numbers
+          and messages, learn how common scams work, and warn others by reporting what you find.
         </p>
       </section>
 
-      {/* 2 ── EMERGENCY PROTOCOL */}
-      <section id="emergency" className="bg-white dark:bg-[#080d1a]/95 border-2 border-rose-300 dark:border-rose-500/30 rounded-3xl p-6 sm:p-10 shadow-xl dark:shadow-[0_0_35px_rgba(244,63,94,0.08)] space-y-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/5 blur-3xl pointer-events-none rounded-full" />
-
-        <div className="border-b border-slate-100 dark:border-slate-800 pb-5 space-y-2">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40 text-xs font-extrabold font-mono">
-            <Flame className="w-3.5 h-3.5 text-rose-500 animate-pulse" /> EMERGENCY PROTOCOL
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-            What To Do Immediately If You Were Scammed
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
-            Select what happened to unlock your customized crisis mitigation checklist:
-          </p>
-        </div>
-
-        {/* Situation Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {TABS.map(({ id, label, icon: Icon }) => {
-            const active = emergencyTab === id;
-            return (
-              <button key={id} type="button" onClick={() => setEmergencyTab(id)}
-                className={`p-3.5 rounded-2xl text-left text-xs font-bold flex flex-col gap-2 border transition-all ${
-                  active
-                    ? 'bg-rose-50 border-rose-300 text-rose-800 shadow-sm dark:bg-rose-500/15 dark:border-rose-500 dark:text-rose-300'
-                    : 'bg-slate-50 dark:bg-[#040711] border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${active ? 'text-rose-600 dark:text-rose-400' : 'text-slate-400'}`} />
-                <span>{label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Step Checklist */}
-        <div className="bg-slate-50 dark:bg-[#040711] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              Priority Actions: {PROTOCOLS[emergencyTab].title}
-            </h3>
-            <span className="text-[11px] text-slate-500 font-mono">Click checkboxes as you complete each step</span>
-          </div>
-
-          <div className="space-y-2.5">
-            {PROTOCOLS[emergencyTab].steps.map((step, idx) => {
-              const done = !!completedSteps[step.id];
-              return (
-                <div key={step.id} onClick={() => toggleStep(step.id)}
-                  className={`p-3.5 rounded-xl border flex items-start gap-3 cursor-pointer transition-all ${
-                    done
-                      ? 'bg-emerald-50 border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30 text-slate-400 line-through'
-                      : 'bg-white dark:bg-[#080d1a] border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 shadow-sm'
-                  }`}
-                >
-                  {done
-                    ? <CheckSquare className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                    : <Square      className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
-                  }
-                  <p className="text-xs sm:text-sm leading-relaxed font-medium">
-                    <strong className="text-slate-500 mr-2 font-mono">STEP {idx + 1}:</strong>
-                    {step.text}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 3 ── CORE VALUES */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {VALUES.map(({ icon: Icon, color, title, desc }) => (
-          <div key={title} className="bg-white dark:bg-[#080d1a]/90 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:dark:border-[#00e5ff]/30 space-y-3 shadow-sm transition-all">
-            <div className={`w-10 h-10 rounded-xl bg-${color}-50 dark:bg-${color}-500/10 text-${color}-700 dark:text-${color}-400 flex items-center justify-center border border-${color}-200 dark:border-${color}-500/20`}>
+      {/* 2. HOW TO USE */}
+      <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {STEPS.map(({ icon: Icon, title, desc, to }) => (
+          <Link key={title} to={to} className={`${card} p-5 space-y-3 hover:border-cyan-500 dark:hover:border-[#00e5ff]/50 transition-colors group`}>
+            <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-[#00e5ff]/10 text-cyan-700 dark:text-[#00e5ff] flex items-center justify-center">
               <Icon className="w-5 h-5" />
             </div>
-            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">{title}</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{desc}</p>
-          </div>
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+              {title}
+              <ArrowRight className="w-4 h-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{desc}</p>
+          </Link>
         ))}
       </section>
 
-      {/* 4 ── FAQ ACCORDION */}
-      <section id="faq" className="space-y-6 pt-4">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-1.5 text-teal-700 dark:text-[#00e5ff] text-xs font-bold uppercase tracking-wider">
-            <HelpCircle className="w-3.5 h-3.5" /> Knowledge Base
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Understand how our platform protects privacy and verifies threats.</p>
-        </div>
-
-        <div className="space-y-3">
-          {FAQS.map((faq, i) => {
-            const isOpen = openFaq === i;
-            return (
-              <div key={i} className="bg-white dark:bg-[#080d1a]/90 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-                <button onClick={() => toggleFaq(i)}
-                  className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 focus:outline-none">
-                  <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">{faq.q}</span>
-                  <div className="p-1 rounded-lg bg-slate-100 dark:bg-[#040711] text-teal-700 dark:text-[#00e5ff] shrink-0 ml-3">
-                    {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </div>
-                </button>
-                {isOpen && (
-                  <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 font-medium">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      {/* 3. LEARN: COMMON SCAMS */}
+      <section id="learn" className="space-y-5 scroll-mt-24">
+        <SectionTitle title="Learn: common scams in India" subtitle="Know the pattern and you can spot it." />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {SCAMS.map(({ icon: Icon, title, how, tip }) => (
+            <article key={title} className={`${card} p-5 space-y-3`}>
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <Icon className="w-4 h-4 text-rose-500 shrink-0" /> {title}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{how}</p>
+              <p className="text-sm text-emerald-700 dark:text-emerald-400 leading-relaxed font-semibold flex gap-2">
+                <ShieldCheck className="w-4 h-4 mt-0.5 shrink-0" /> <span>{tip}</span>
+              </p>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* 5 ── CONTACT FORM */}
-      <section className="bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-[#00e5ff]/20 rounded-3xl p-6 sm:p-10 shadow-xl dark:shadow-[0_0_35px_rgba(0,229,255,0.08)] space-y-6">
-        <div className="space-y-2">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <Mail className="w-5 h-5 text-teal-600 dark:text-[#00e5ff]" /> Contact Cyber Threat Intelligence Team
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Research inquiries, threat intelligence data exchange, or platform feedback.
-          </p>
+      {/* 4. IF YOU WERE SCAMMED */}
+      <section id="emergency" className="scroll-mt-24 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/30 rounded-3xl p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Already scammed? Act fast</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Follow these four steps in order.</p>
+          </div>
+          <a href="tel:1930"
+             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm shadow-sm transition-colors">
+            <PhoneCall className="w-4 h-4" /> Call 1930
+          </a>
         </div>
 
-        {sent ? (
-          <div className="p-6 bg-emerald-50 border border-emerald-200 dark:bg-emerald-500/10 dark:border-emerald-500/30 rounded-2xl text-center space-y-2 animate-in fade-in">
-            <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-            <h3 className="text-base font-bold text-emerald-800 dark:text-emerald-300">Message Dispatched!</h3>
-            <p className="text-xs text-emerald-700 dark:text-slate-300 font-medium">
-              Our intelligence team will respond within 24 business hours.
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-800 dark:text-slate-300">Full Name <span className="text-rose-500">*</span></label>
-                <input type="text" required value={form.name} onChange={setField('name')} placeholder="e.g. Jordan Smith" className={INPUT} />
+        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {IF_SCAMMED.map((s, i) => (
+            <li key={s.title} className="bg-white dark:bg-[#080d1a] border border-rose-100 dark:border-rose-500/20 rounded-2xl p-4 flex gap-3">
+              <span className="w-7 h-7 rounded-full bg-rose-600 text-white text-sm font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">{s.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{s.desc}</p>
               </div>
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-800 dark:text-slate-300">Email <span className="text-rose-500">*</span></label>
-                <input type="email" required value={form.email} onChange={setField('email')} placeholder="jordan@security.org" className={INPUT} />
-              </div>
-            </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-800 dark:text-slate-300">Inquiry Topic</label>
-              <input type="text" value={form.subject} onChange={setField('subject')} placeholder="Threat intelligence integration, feature request..." className={INPUT} />
-            </div>
+      {/* 5. FAQ */}
+      <section id="faq" className="space-y-5 scroll-mt-24">
+        <SectionTitle title="Frequently asked questions" />
+        <div className="space-y-3">
+          {FAQS.map((faq) => (
+            <details key={faq.q} className={`${card} group`}>
+              <summary className="list-none cursor-pointer px-5 py-4 flex items-center justify-between gap-3 text-sm sm:text-base font-bold text-slate-900 dark:text-white [&::-webkit-details-marker]:hidden">
+                {faq.q}
+                <ChevronDown className="w-4 h-4 text-teal-700 dark:text-[#00e5ff] shrink-0 transition-transform group-open:rotate-180" />
+              </summary>
+              <p className="px-5 pb-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
-            <div className="space-y-1">
-              <label className="block text-xs font-bold text-slate-800 dark:text-slate-300">Message <span className="text-rose-500">*</span></label>
-              <textarea required rows={4} value={form.message} onChange={setField('message')}
-                placeholder="Provide details regarding your communication..."
-                className={`${INPUT} leading-relaxed`} />
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-              <a href="mailto:intelligence@scamshield.ai" className="text-xs text-teal-700 dark:text-[#00e5ff] hover:text-[#c084fc] hover:underline font-mono font-bold">
-                Direct dispatch: intelligence@scamshield.ai
-              </a>
-              <button type="submit"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:opacity-95 text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00e5ff]/20 active:scale-[0.98]">
-                <Send className="w-4 h-4" /> Transmit Message
-              </button>
-            </div>
-          </form>
-        )}
+      {/* 6. CONTACT */}
+      <section id="contact" className={`${card} scroll-mt-24 p-6 sm:p-8 text-center space-y-3`}>
+        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">Still have a question?</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400">Feedback, ideas, or data requests are welcome.</p>
+        <a href="mailto:intelligence@scamshield.ai"
+           className="inline-flex items-center gap-2 text-sm font-bold text-teal-700 dark:text-[#00e5ff] hover:underline">
+          <Mail className="w-4 h-4" /> intelligence@scamshield.ai
+        </a>
       </section>
 
     </div>

@@ -16,7 +16,7 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-const MYSQL_PASSWORD = process.env.DB_PASSWORD || 'Sanchit@garg18';
+const MYSQL_PASSWORD = process.env.DB_PASSWORD || '5441@Shobhit';
 const messageMemoryCache = new Map();
 
 const dbConfig = process.env.DATABASE_URL
