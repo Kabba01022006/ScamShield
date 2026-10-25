@@ -11,8 +11,12 @@ export const AuthProvider = ({ children }) => {
   // On first load, try to restore a previously "logged in" user from
   // localStorage. If nothing is saved, currentUser starts as null.
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null; // corrupted/blocked storage must never white-screen the app
+    }
   });
 
   // A short-lived message shown after login/signup/logout 

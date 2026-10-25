@@ -8,13 +8,16 @@ const THEME_KEY = 'scamshield_theme';
 export const ThemeProvider = ({ children }) => {
   // Restore saved theme on load; default to 'light' if nothing is saved.
   const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem(THEME_KEY);
-    return saved === 'dark' ? 'dark' : 'light';
+    try {
+      return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem(THEME_KEY, theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch { /* ignore */ }
   }, [theme]);
 
   const toggleTheme = () => {
