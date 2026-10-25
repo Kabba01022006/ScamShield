@@ -23,6 +23,7 @@ CLASSIFICATION RULES:
 - ONLY genuine transactional messages that DELIVER a code to the user and advise "do not share it" (e.g. "259636 is your OTP for Instagram. Do not tell your OTP to anyone"). If a message asks the user to SEND or REPLY with an OTP, it is NOT safe, it is a SCAM!
 - Genuine communications, friend/family updates, meeting arrangements, or standard receipts/confirmations without threat indicators.
 
+
 OUTPUT FORMAT:
 Respond strictly in valid JSON format.
 {
