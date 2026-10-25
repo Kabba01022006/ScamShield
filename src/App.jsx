@@ -45,13 +45,14 @@ export default function App() {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/scam/:id" element={<ScamDetailPage />} />
+                  <Route path="/map" element={<Navigate to="/dashboard" replace />} />
 
                   {/* Recovery flow: RecoverLayout renders the child steps via <Outlet /> */}
                   <Route path="/recover" element={<RecoverLayout />}>
                     <Route index element={<ImmediateActionsStep />} />
                     <Route path="complaint" element={<ComplaintDraftStep />} />
                   </Route>
-                  
+
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
