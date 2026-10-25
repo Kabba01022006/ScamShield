@@ -852,10 +852,10 @@ export const DashboardPage = () => {
               </h2>
             </div>
             <Link
-              to="/map"
+              to="/database"
               className="text-xs font-bold text-cyan-600 dark:text-[#00e5ff] hover:underline flex items-center gap-1"
             >
-              <span>Full Radar Map</span>
+              <span>Explore Database</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   ShieldAlert, 
-  Search, 
   PlusCircle, 
   Database, 
   HelpCircle, 
@@ -14,7 +13,6 @@ import {
   Moon, 
   ShieldCheck, 
   Cpu, 
-  MapPin,
   LayoutDashboard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -36,9 +34,7 @@ export const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/', icon: ShieldCheck },
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, badge: 'LIVE' },
-    { name: 'Threat Map', path: '/map', icon: MapPin },
     { name: 'AI Scanner', path: '/analyze', icon: Cpu, badge: 'AI' },
-    { name: 'Check & Search', path: '/search', icon: Search },
     { name: 'Threat Database', path: '/database', icon: Database },
     { name: 'About & Defense', path: '/about', icon: HelpCircle },
   ];
@@ -54,22 +50,17 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo */}
+          {/* Logo without subtitle */}
           <Link 
             to="/" 
             className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-[#00e5ff] rounded-lg p-1"
           >
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#818cf8] to-[#a855f7] p-0.5 shadow-md shadow-[#00e5ff]/25 group-hover:scale-105 group-hover:shadow-[#00e5ff]/50 transition-all duration-200 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#818cf8] to-[#a855f7] p-0.5 shadow-md shadow-[#00e5ff]/25 group-hover:scale-105 group-hover:shadow-[#00e5ff]/50 transition-all duration-200 flex items-center justify-center shrink-0">
               <ShieldAlert className="w-5 h-5 text-black stroke-[2.5] group-hover:rotate-6 transition-transform" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-slate-950 dark:text-white flex items-center gap-0.5 font-display">
-                ScamShield<span className="text-gradient-cyber font-black">AI</span>
-              </span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wider uppercase font-mono">
-                Cyber Defense Network
-              </span>
-            </div>
+            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-950 dark:text-white flex items-center gap-0.5 font-display">
+              ScamShield<span className="text-gradient-cyber font-black">AI</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -102,16 +93,6 @@ export const Navbar = () => {
           {/* Right Action buttons */}
           <div className="hidden md:flex items-center gap-2.5">
             
-            {/* Theme Toggle (Light / Dark) */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all hover:border-[#00e5ff]/40"
-              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400 transition-transform rotate-0 hover:rotate-45" /> : <Moon className="w-4 h-4 text-slate-700 transition-transform rotate-0 hover:-rotate-12" />}
-            </button>
-
             {/* High Contrast Report Threat Button */}
             <Link
               to="/report"
@@ -120,6 +101,23 @@ export const Navbar = () => {
               <PlusCircle className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Report Threat</span>
             </Link>
+
+            {/* Subtle Divider */}
+            <div className="h-5 w-px bg-slate-200 dark:bg-white/10 mx-0.5" />
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-[#00e5ff]/10 border border-slate-200 dark:border-white/10 dark:hover:border-[#00e5ff]/40 transition-all duration-200 text-slate-700 dark:text-[#00e5ff] shadow-sm flex items-center justify-center group"
+              title={isDark ? "Switch to Light Mode" : "Switch to Cyber Dark Mode"}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-700 group-hover:-rotate-12 transition-transform duration-300" />
+              )}
+            </button>
 
             {/* Auth section */}
             {isAuthenticated && currentUser ? (
@@ -143,9 +141,9 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors"
               >
-                <User className="w-4 h-4 text-slate-500" />
+                <User className="w-4 h-4 text-slate-500 dark:text-[#00e5ff]" />
                 <span>Sign In</span>
               </Link>
             )}
@@ -156,20 +154,22 @@ export const Navbar = () => {
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-[#00e5ff] dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors"
+              title={isDark ? "Switch to Light Mode" : "Switch to Cyber Dark Mode"}
               aria-label="Toggle theme"
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
             </button>
             <Link
               to="/report"
-              className="p-2 rounded-lg bg-slate-900 text-white text-xs font-bold"
+              className="p-2 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] text-black font-black text-xs shadow-md shadow-[#00e5ff]/20 active:scale-95"
+              title="Report Threat"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-4 h-4 stroke-[2.5]" />
             </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg focus:outline-none"
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl border border-transparent dark:border-white/5 focus:outline-none"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

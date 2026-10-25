@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Database, Search, Filter, ArrowUpDown,
   PlusCircle, AlertCircle, X
@@ -25,9 +25,17 @@ const INPUT_CLS = 'bg-slate-50 dark:bg-[#040711] border border-slate-200 dark:bo
 
 export const DatabasePage = () => {
   const { scams } = useScams();
+  const [searchParams] = useSearchParams();
   const [selectedType,   setSelectedType]   = useState('All');
-  const [searchKeyword,  setSearchKeyword]  = useState('');
+  const [searchKeyword,  setSearchKeyword]  = useState(searchParams.get('q') || '');
   const [sortBy,         setSortBy]         = useState('newest');
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null) {
+      setSearchKeyword(q);
+    }
+  }, [searchParams]);
 
   const isFiltered = selectedType !== 'All' || searchKeyword.trim().length > 0;
 

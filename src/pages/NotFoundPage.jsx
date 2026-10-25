@@ -1,57 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldAlert, Home, PlusCircle, Search } from 'lucide-react';
+import { Home, ArrowLeft } from 'lucide-react';
 
 export const NotFoundPage = () => {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-16">
-      <div className="max-w-md w-full bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-[#00e5ff]/20 rounded-3xl p-8 sm:p-10 text-center space-y-6 shadow-xl dark:shadow-[0_0_35px_rgba(0,229,255,0.08)]">
+      <div className="max-w-md w-full bg-white dark:bg-[#080d1a]/95 border border-slate-200 dark:border-cyan-500/20 rounded-3xl p-8 sm:p-10 text-center space-y-6 shadow-xl backdrop-blur-xl">
         
-        {/* Visual Graphic */}
-        <div className="relative w-24 h-24 mx-auto">
-          <div className="absolute inset-0 rounded-full bg-rose-500/10 animate-ping"></div>
-          <div className="relative w-24 h-24 rounded-full bg-slate-100 dark:bg-[#040711] border-2 border-rose-300 dark:border-rose-500/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shadow-md">
-            <ShieldAlert className="w-12 h-12" />
-          </div>
-        </div>
-
-        {/* Text */}
+        {/* 404 Badge */}
         <div className="space-y-2">
-          <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-rose-600 dark:from-[#00e5ff] dark:via-[#818cf8] dark:to-[#a855f7] font-mono">
+          <span className="text-6xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] font-mono tracking-tight">
             404
           </span>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Security Check: Page Not Found
+          <h1 className="text-2xl font-black text-slate-950 dark:text-white tracking-tight font-display">
+            Page Not Found
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            The link you followed doesn't exist or may have been moved. Don't worry, your connection remains secure.
+            The page you are looking for doesn't exist, has been removed, or the link may be broken.
           </p>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col gap-3 pt-2">
+        {/* Simple Return Home CTA */}
+        <div className="pt-2">
           <Link
             to="/"
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00e5ff]/20 hover:opacity-95 active:scale-[0.98]"
+            className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#00e5ff]/20 active:scale-95"
           >
-            <Home className="w-4 h-4" />
-            <span>Return to Home Page</span>
-          </Link>
-
-          <Link
-            to="/report"
-            className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-[#040711] dark:hover:bg-[#080d1a] dark:text-[#00e5ff] font-bold text-sm flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-800 dark:hover:border-[#00e5ff]/40 transition-all"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Report a Scam</span>
-          </Link>
-
-          <Link
-            to="/search"
-            className="text-xs text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-[#00e5ff] transition-colors pt-1 flex items-center justify-center gap-1 font-bold"
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span>Search Threat Database</span>
+            <Home className="w-4 h-4 stroke-[2.5]" />
+            <span>Return to Home</span>
           </Link>
         </div>
 

@@ -10,25 +10,25 @@ export const ThreatTicker = () => {
     {
       level: "CRITICAL",
       text: "Mass Phishing Campaign: Fake USPS & Toll SMS targeting +1 area codes with fraudulent $0.35-$11.50 payment portals.",
-      link: "/search?q=usps",
+      link: "/database?q=usps",
       tag: "SMS Attack"
     },
     {
       level: "HIGH",
       text: "Voice Spoofing Surge: Callers posing as Chase & Wells Fargo Fraud Teams demanding 2FA security codes.",
-      link: "/search?q=chase",
+      link: "/database?q=chase",
       tag: "VOIP Spoofing"
     },
     {
       level: "CRITICAL",
       text: "DeFi Staking Fraud: Cloned investment websites promising 18% daily return draining connected Web3 wallets.",
-      link: "/search?q=crypto",
+      link: "/database?q=crypto",
       tag: "Crypto Drainer"
     },
     {
       level: "HIGH",
       text: "PDF Invoice Malware: Fake Geek Squad & Amazon Prime annual renewal emails requesting AnyDesk installs.",
-      link: "/search?q=amazon",
+      link: "/database?q=amazon",
       tag: "Email Phish"
     }
   ];

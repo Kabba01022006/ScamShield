@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ScamProvider } from './context/ScamContext';
@@ -11,12 +11,10 @@ import { HomePage } from './pages/HomePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AiAnalyzerPage } from './pages/AiAnalyzerPage';
 import { DatabasePage } from './pages/DatabasePage';
-import { SearchPage } from './pages/SearchPage';
 import { ReportPage } from './pages/ReportPage';
 import { AboutPage } from './pages/AboutPage';
 import { LoginPage } from './pages/LoginPage';
 import { ScamDetailPage } from './pages/ScamDetailPage';
-import { ThreatMapPage } from './pages/ThreatMapPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export default function App() {
@@ -39,12 +37,12 @@ export default function App() {
                   <Route path="/analyzer" element={<AiAnalyzerPage />} />
                   <Route path="/analyze" element={<AiAnalyzerPage />} />
                   <Route path="/database" element={<DatabasePage />} />
-                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/search" element={<Navigate to="/" replace />} />
                   <Route path="/report" element={<ReportPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/scam/:id" element={<ScamDetailPage />} />
-                  <Route path="/map" element={<ThreatMapPage />} />
+                  <Route path="/map" element={<Navigate to="/dashboard" replace />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>

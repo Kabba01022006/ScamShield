@@ -44,17 +44,9 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/map" className="hover:text-slate-950 dark:hover:text-white transition-colors">
-                  India Threat Radar Map
-                </Link>
-              </li>
-              <li>
                 <Link to="/analyze" className="hover:text-slate-950 dark:hover:text-white transition-colors flex items-center gap-1">
                   AI Scam Analyzer <span className="text-[10px] bg-slate-100 dark:bg-white/10 px-1.5 py-0.2 rounded font-mono font-bold text-slate-900 dark:text-slate-200 border border-slate-200 dark:border-white/10">AI</span>
                 </Link>
-              </li>
-              <li>
-                <Link to="/search" className="hover:text-slate-950 dark:hover:text-white transition-colors">Identifier Search & Verify</Link>
               </li>
               <li>
                 <Link to="/database" className="hover:text-slate-950 dark:hover:text-white transition-colors">Public Threat Database</Link>
