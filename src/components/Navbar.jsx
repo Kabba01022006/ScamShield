@@ -13,10 +13,12 @@ import {
   Moon, 
   ShieldCheck, 
   Cpu, 
-  LayoutDashboard
+  LayoutDashboard,
+  LifeBuoy
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useRecoveryStore } from '../store/useRecoveryStore';
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,6 +26,8 @@ export const Navbar = () => {
   const { theme, toggleTheme, isDark } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const completedSteps = useRecoveryStore((s) => s.completedSteps);
+  const recoveryProgress = completedSteps && completedSteps.length > 0 ? `${completedSteps.length}/6` : null;
 
   const isActive = (path) => {
     if (path === '/' && location.pathname === '/') return true;
@@ -36,6 +40,7 @@ export const Navbar = () => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, badge: 'LIVE' },
     { name: 'AI Scanner', path: '/analyze', icon: Cpu, badge: 'AI' },
     { name: 'Threat Database', path: '/database', icon: Database },
+    { name: 'Recovery', path: '/recover', icon: LifeBuoy, badge: recoveryProgress },
     { name: 'About & Defense', path: '/about', icon: HelpCircle },
   ];
 
@@ -64,7 +69,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-0.5 xl:gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.path);
               const Icon = link.icon;
@@ -72,7 +77,7 @@ export const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 ${
+                  className={`px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 ${
                     active
                       ? 'text-cyan-700 dark:text-[#00e5ff] bg-cyan-500/10 dark:bg-[#00e5ff]/10 border border-cyan-500/30 dark:border-[#00e5ff]/35 shadow-sm'
                       : 'text-slate-600 border border-transparent hover:text-slate-950 hover:bg-slate-100/70 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5'
@@ -81,7 +86,7 @@ export const Navbar = () => {
                   <Icon className={`w-3.5 h-3.5 ${active ? 'text-cyan-600 dark:text-[#00e5ff]' : 'text-slate-400'}`} />
                   <span>{link.name}</span>
                   {link.badge && (
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-purple-500/20 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc] border border-purple-500/30 dark:border-[#a855f7]/30 font-mono tracking-wider">
+                    <span className={`px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider border ${link.name === 'Recovery' ? 'bg-cyan-500/20 text-cyan-800 dark:bg-[#00e5ff]/20 dark:text-[#00e5ff] border-cyan-500/30 dark:border-[#00e5ff]/30' : 'bg-purple-500/20 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc] border-purple-500/30 dark:border-[#a855f7]/30'}`}>
                       {link.badge}
                     </span>
                   )}
@@ -202,7 +207,7 @@ export const Navbar = () => {
                     <span>{link.name}</span>
                   </div>
                   {link.badge && (
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc]">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold font-mono ${link.name === 'Recovery' ? 'bg-cyan-500/20 text-cyan-800 dark:bg-[#00e5ff]/20 dark:text-[#00e5ff]' : 'bg-purple-50 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc]'}`}>
                       {link.badge}
                     </span>
                   )}
@@ -247,4 +252,6 @@ export const Navbar = () => {
     </header>
   );
 };
+
+
 

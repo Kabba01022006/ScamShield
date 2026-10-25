@@ -16,6 +16,9 @@ import { AboutPage } from './pages/AboutPage';
 import { LoginPage } from './pages/LoginPage';
 import { ScamDetailPage } from './pages/ScamDetailPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { RecoverLayout } from './pages/recover/RecoverLayout';
+import { ImmediateActionsStep } from './pages/recover/ImmediateActionsStep';
+import { ComplaintDraftStep } from './pages/recover/ComplaintDraftStep';
 
 export default function App() {
   return (
@@ -42,7 +45,7 @@ export default function App() {
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/scam/:id" element={<ScamDetailPage />} />
-                  <Route path="/map" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/map" element={<ThreatMapPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
