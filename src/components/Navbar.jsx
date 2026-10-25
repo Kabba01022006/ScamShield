@@ -52,68 +52,67 @@ export const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 dark:bg-[#000000]/90 backdrop-blur-xl border-b border-slate-200/80 dark:border-white/10 transition-colors shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-5 xl:px-8">
+        <div className="flex items-center justify-between h-16 gap-2 xl:gap-4">
           
           {/* Logo without subtitle */}
           <Link 
             to="/" 
-            className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-[#00e5ff] rounded-lg p-1"
+            className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#00e5ff] rounded-lg p-1 shrink-0"
           >
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#818cf8] to-[#a855f7] p-0.5 shadow-md shadow-[#00e5ff]/25 group-hover:scale-105 group-hover:shadow-[#00e5ff]/50 transition-all duration-200 flex items-center justify-center shrink-0">
-              <ShieldAlert className="w-5 h-5 text-black stroke-[2.5] group-hover:rotate-6 transition-transform" />
+            <div className="h-8 w-8 xl:h-9 xl:w-9 rounded-xl bg-gradient-to-br from-[#00e5ff] via-[#818cf8] to-[#a855f7] p-0.5 shadow-md shadow-[#00e5ff]/25 group-hover:scale-105 transition-all duration-200 flex items-center justify-center shrink-0">
+              <ShieldAlert className="w-4 h-4 text-black stroke-[2.5]" />
             </div>
-            <span className="text-lg sm:text-xl font-black tracking-tight text-slate-950 dark:text-white flex items-center gap-0.5 font-display">
+            <span className="text-base sm:text-lg xl:text-xl font-black tracking-tight text-slate-950 dark:text-white flex items-center gap-0.5 font-display shrink-0">
               ScamShield<span className="text-gradient-cyber font-black">AI</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-0.5 xl:gap-1">
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 ${
-                    active
-                      ? 'text-cyan-700 dark:text-[#00e5ff] bg-cyan-500/10 dark:bg-[#00e5ff]/10 border border-cyan-500/30 dark:border-[#00e5ff]/35 shadow-sm'
-                      : 'text-slate-600 border border-transparent hover:text-slate-950 hover:bg-slate-100/70 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${active ? 'text-cyan-600 dark:text-[#00e5ff]' : 'text-slate-400'}`} />
-                  <span>{link.name}</span>
-                  {link.badge && (
-                    <span className={`px-1.5 py-0.2 rounded text-[9px] font-black font-mono tracking-wider border ${link.name === 'Recovery' ? 'bg-cyan-500/20 text-cyan-800 dark:bg-[#00e5ff]/20 dark:text-[#00e5ff] border-cyan-500/30 dark:border-[#00e5ff]/30' : 'bg-purple-500/20 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc] border-purple-500/30 dark:border-[#a855f7]/30'}`}>
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Desktop Navigation & Actions */}
+          <div className="hidden lg:flex items-center gap-1.5 xl:gap-2.5 shrink-0">
+            {/* Desktop Navigation Links */}
+            <nav className="flex items-center gap-0.5 xl:gap-1 shrink-0">
+              {navLinks.map((link) => {
+                const active = isActive(link.path);
+                const Icon = link.icon;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`px-2 py-1.5 xl:px-2.5 xl:py-2 rounded-xl text-xs font-bold transition-all duration-150 flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
+                      active
+                        ? 'text-cyan-700 dark:text-[#00e5ff] bg-cyan-500/10 dark:bg-[#00e5ff]/10 border border-cyan-500/30 dark:border-[#00e5ff]/35 shadow-sm'
+                        : 'text-slate-600 border border-transparent hover:text-slate-950 hover:bg-slate-100/70 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5'
+                    }`}
+                  >
+                    <Icon className={`w-3.5 h-3.5 shrink-0 ${active ? 'text-cyan-600 dark:text-[#00e5ff]' : 'text-slate-400'}`} />
+                    <span className="shrink-0">{link.name}</span>
+                    {link.badge && (
+                      <span className={`px-1.5 py-0.5 rounded text-[8px] xl:text-[9px] font-black font-mono tracking-wider border leading-none shrink-0 ${link.name === 'Recovery' ? 'bg-cyan-500/20 text-cyan-800 dark:bg-[#00e5ff]/20 dark:text-[#00e5ff] border-cyan-500/30 dark:border-[#00e5ff]/30' : 'bg-purple-500/20 text-purple-700 dark:bg-[#a855f7]/20 dark:text-[#c084fc] border-purple-500/30 dark:border-[#a855f7]/30'}`}>
+                        {link.badge}
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
 
-          {/* Right Action buttons */}
-          <div className="hidden md:flex items-center gap-2.5">
-            
             {/* High Contrast Report Threat Button */}
             <Link
               to="/report"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-xs shadow-lg shadow-[#00e5ff]/25 active:scale-95 transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 xl:px-3.5 xl:py-2 rounded-xl bg-gradient-to-r from-[#00e5ff] via-[#818cf8] to-[#a855f7] hover:from-[#38bdf8] hover:to-[#c084fc] text-black font-black text-xs shadow-lg shadow-[#00e5ff]/25 active:scale-95 transition-all shrink-0 whitespace-nowrap ml-1.5 xl:ml-3"
             >
               <PlusCircle className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Report Threat</span>
             </Link>
 
             {/* Subtle Divider */}
-            <div className="h-5 w-px bg-slate-200 dark:bg-white/10 mx-0.5" />
+            <div className="h-5 w-px bg-slate-200 dark:bg-white/10 shrink-0 mx-0.5" />
 
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-[#00e5ff]/10 border border-slate-200 dark:border-white/10 dark:hover:border-[#00e5ff]/40 transition-all duration-200 text-slate-700 dark:text-[#00e5ff] shadow-sm flex items-center justify-center group"
+              className="p-1.5 xl:p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-[#00e5ff]/10 border border-slate-200 dark:border-white/10 dark:hover:border-[#00e5ff]/40 transition-all duration-200 text-slate-700 dark:text-[#00e5ff] shadow-sm flex items-center justify-center group shrink-0"
               title={isDark ? "Switch to Light Mode" : "Switch to Cyber Dark Mode"}
               aria-label="Toggle theme"
             >
@@ -126,19 +125,19 @@ export const Navbar = () => {
 
             {/* Auth section */}
             {isAuthenticated && currentUser ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700/60">
-                <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs">
-                  <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+              <div className="flex items-center gap-1.5 xl:gap-2 pl-1.5 xl:pl-2 border-l border-slate-200 dark:border-slate-700/60 shrink-0">
+                <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs shrink-0">
+                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
                     {currentUser.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-slate-900 dark:text-slate-200 font-bold max-w-[100px] truncate" title={currentUser.name}>
+                  <span className="text-slate-900 dark:text-slate-200 font-bold max-w-[75px] xl:max-w-[105px] truncate" title={currentUser.name}>
                     {currentUser.name}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
                   title="Sign out"
-                  className="p-2 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors shrink-0"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -146,7 +145,7 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 xl:py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors shrink-0 whitespace-nowrap"
               >
                 <User className="w-4 h-4 text-slate-500 dark:text-[#00e5ff]" />
                 <span>Sign In</span>
@@ -156,7 +155,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile hamburger menu & theme toggle */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-[#00e5ff] dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 border border-slate-200 dark:border-white/10 transition-colors"
@@ -186,7 +185,7 @@ export const Navbar = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-[#000000] border-b border-slate-200 dark:border-white/10 px-4 pt-2 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden bg-white dark:bg-[#000000] border-b border-slate-200 dark:border-white/10 px-4 pt-2 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex flex-col space-y-1">
             {navLinks.map((link) => {
               const active = isActive(link.path);

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import mysql from 'mysql2/promise';
 import cors from 'cors';
@@ -16,7 +17,7 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-const MYSQL_PASSWORD = process.env.DB_PASSWORD || '5441@Shobhit';
+const MYSQL_PASSWORD = process.env.DB_PASSWORD || 'Sanchit@garg18';
 const messageMemoryCache = new Map();
 
 const dbConfig = process.env.DATABASE_URL
@@ -505,12 +506,23 @@ async function ensureDatabaseSchema() {
       console.log('✅ Seeded email_threat_records with verified phishing/spam emails');
     }
 
-    // 3. Drop legacy tables if they exist
+    // 3. Complaints Table (Dynamic Incident Reports with JSON details)
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS complaints (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        phone_number VARCHAR(50) NOT NULL,
+        incident_details JSON NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // 4. Drop legacy tables if they exist
     await db.execute('DROP TABLE IF EXISTS dataset_records');
     await db.execute('DROP TABLE IF EXISTS kaggle_records');
     await db.execute('DROP TABLE IF EXISTS threat_cache');
 
-    console.log('✅ Database verified: strictly phone_threat_records & email_threat_records active');
+    console.log('✅ Database verified: complaints, phone_threat_records & email_threat_records active');
   } catch (err) {
     console.error('⚠️ Database schema verification error:', err.message);
   }
@@ -997,118 +1009,103 @@ ATTACHMENTS: [${JSON.stringify(attachments)}]`;
 });
 
 // =========================================================================
-// 4. COMMUNITY SCAM REPORT INGESTION ENDPOINT
-// Automatically indexes reported phone numbers and emails into MySQL threat tables
+// 4. DYNAMIC INCIDENT REPORTING & COMPLAINT INGESTION ENDPOINT
+// Stores flexible incident_details in MySQL JSON column and indexes threats
 // =========================================================================
 app.post('/api/report', async (req, res) => {
-  const { scamType = '', identifier = '', secondaryIdentifier = '', title = '', description = '', threatLevel = 'High' } = req.body;
+  try {
+    const { email, phone_number, incident_details } = req.body;
 
-  if (!identifier && !description && !title) {
-    return res.status(400).json({ error: 'Report details are required' });
-  }
-
-  const fullContent = [identifier, secondaryIdentifier, description, title].filter(Boolean).join(' ');
-  const lowerText = fullContent.toLowerCase();
-
-  // 1. Extract and normalize phone numbers
-  const foundPhones = new Set();
-
-  [identifier, secondaryIdentifier].forEach(idStr => {
-    if (!idStr) return;
-    const clean = idStr.trim().replace(/[\s\-\(\)\.]/g, '');
-    if (/^\+?\d{7,15}$/.test(clean)) {
-      const normalized = clean.startsWith('+') ? clean : (clean.length === 10 ? `+91${clean}` : `+${clean}`);
-      foundPhones.add(normalized);
+    // Strict validation: Return HTTP 400 if email or phone_number is missing
+    if (
+      !email || 
+      !phone_number || 
+      typeof email !== 'string' || 
+      typeof phone_number !== 'string' || 
+      !email.trim() || 
+      !phone_number.trim()
+    ) {
+      return res.status(400).json({
+        error: 'Missing required fields: both email and phone_number are mandatory.'
+      });
     }
-  });
 
-  const phoneRegex = /(?:\+?(\d{1,4})[\s.-]?)?\(?(\d{2,4})\)?[\s.-]?(\d{3,4})[\s.-]?(\d{3,5})/g;
-  let pMatch;
-  while ((pMatch = phoneRegex.exec(fullContent)) !== null) {
-    const raw = pMatch[0].replace(/[\s\-\(\)\.]/g, '');
-    if (raw.length >= 10 && raw.length <= 15) {
-      const normalized = raw.startsWith('+') ? raw : (raw.length === 10 ? `+91${raw}` : `+${raw}`);
-      foundPhones.add(normalized);
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone_number.trim();
+
+    // Ensure incident_details is stringified for the SQL parameterized query
+    const detailsJson = typeof incident_details === 'string'
+      ? incident_details
+      : JSON.stringify(incident_details || {});
+
+    // Insert the record into the complaints table with JSON column
+    const [result] = await db.execute(
+      'INSERT INTO complaints (email, phone_number, incident_details) VALUES (?, ?, ?)',
+      [trimmedEmail, trimmedPhone, detailsJson]
+    );
+
+    // Also auto-index reported phone into phone_threat_records
+    const cleanPhone = trimmedPhone.replace(/[\s\-\(\)\.]/g, '');
+    if (cleanPhone.length >= 7 && cleanPhone.length <= 15) {
+      const normalizedPhone = cleanPhone.startsWith('+') 
+        ? cleanPhone 
+        : (cleanPhone.length === 10 ? `+91${cleanPhone}` : `+${cleanPhone}`);
+      const countryCode = normalizedPhone.startsWith('+91') 
+        ? 'IN' 
+        : (normalizedPhone.startsWith('+1') ? 'US' : 'GLOBAL');
+      
+      const category = (incident_details && incident_details.scam_category) 
+        ? incident_details.scam_category 
+        : 'COMMUNITY_REPORTED_FRAUD';
+
+      try {
+        await db.execute(
+          `INSERT INTO phone_threat_records (phone_number, carrier, country_code, report_count, threat_category, is_scam)
+           VALUES (?, 'Community Complaint', ?, 1, ?, 1)
+           ON DUPLICATE KEY UPDATE report_count = report_count + 1, threat_category = VALUES(threat_category)`,
+          [normalizedPhone, countryCode, category]
+        );
+      } catch (e) {
+        console.warn('⚠️ Phone index warning:', e.message);
+      }
     }
-  }
 
-  // 2. Extract and normalize email addresses
-  const foundEmails = new Set();
-  const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;
-  let eMatch;
-  while ((eMatch = emailRegex.exec(fullContent)) !== null) {
-    foundEmails.add(eMatch[0].toLowerCase().trim());
-  }
+    // Also auto-index reported email into email_threat_records
+    if (trimmedEmail.includes('@') && !trimmedEmail.includes(' ')) {
+      const domain = trimmedEmail.split('@')[1] || '';
+      const notes = (incident_details && incident_details.incident_title) 
+        ? incident_details.incident_title.slice(0, 255) 
+        : 'Citizen Incident Complaint';
+      const category = (incident_details && incident_details.scam_category) 
+        ? incident_details.scam_category 
+        : 'COMMUNITY_REPORTED_PHISHING';
 
-  [identifier, secondaryIdentifier].forEach(idStr => {
-    if (idStr && idStr.includes('@') && !idStr.includes(' ')) {
-      foundEmails.add(idStr.toLowerCase().trim());
+      try {
+        await db.execute(
+          `INSERT INTO email_threat_records (email_address, domain, threat_category, report_count, is_scam, notes)
+           VALUES (?, ?, ?, 1, 1, ?)
+           ON DUPLICATE KEY UPDATE report_count = report_count + 1, notes = VALUES(notes)`,
+          [trimmedEmail.toLowerCase(), domain, category, notes]
+        );
+      } catch (e) {
+        console.warn('⚠️ Email index warning:', e.message);
+      }
     }
-  });
 
-  // 3. Category Determination based on report details
-  let phoneCategory = 'COMMUNITY_REPORTED_SPAM';
-  let emailCategory = 'COMMUNITY_REPORTED_PHISHING';
+    console.log(`📢 Citizen Fraud Complaint #${result.insertId} registered successfully in MySQL complaints table.`);
 
-  if (lowerText.includes('digital arrest') || lowerText.includes('cbi') || lowerText.includes('police')) {
-    phoneCategory = 'DIGITAL_ARREST_EXTORTION';
-    emailCategory = 'GOVERNMENT_IMPERSONATION';
-  } else if (lowerText.includes('electricity') || lowerText.includes('bill') || lowerText.includes('power')) {
-    phoneCategory = 'UTILITY_BILL_FRAUD';
-  } else if (lowerText.includes('job') || lowerText.includes('telegram') || lowerText.includes('task') || lowerText.includes('youtube')) {
-    phoneCategory = 'TELEGRAM_PART_TIME_JOB';
-  } else if (lowerText.includes('bank') || lowerText.includes('chase') || lowerText.includes('sbi') || lowerText.includes('hdfc') || lowerText.includes('kyc') || lowerText.includes('debit') || lowerText.includes('credit')) {
-    phoneCategory = 'KYC_BANK_SUSPENSION';
-    emailCategory = 'BANK_IMPERSONATION';
-  } else if (lowerText.includes('lottery') || lowerText.includes('prize') || lowerText.includes('won')) {
-    phoneCategory = 'LOTTERY_SCAM';
-    emailCategory = 'LOTTERY_SCAM';
+    return res.status(201).json({
+      success: true,
+      message: 'Complaint submitted successfully and stored in complaints table.',
+      complaint_id: result.insertId,
+      email: trimmedEmail,
+      phone_number: trimmedPhone
+    });
+
+  } catch (err) {
+    console.error('❌ Error processing incident report:', err);
+    return res.status(500).json({ error: 'Failed to record complaint in database: ' + err.message });
   }
-
-  const addedPhones = [];
-  const addedEmails = [];
-
-  // 4. Upsert into phone_threat_records
-  for (const phone of foundPhones) {
-    try {
-      const countryCode = phone.startsWith('+91') ? 'IN' : (phone.startsWith('+1') ? 'US' : (phone.startsWith('+44') ? 'UK' : 'GLOBAL'));
-      await db.execute(
-        `INSERT INTO phone_threat_records (phone_number, carrier, country_code, report_count, threat_category, is_scam)
-         VALUES (?, 'Community Reported', ?, 1, ?, 1)
-         ON DUPLICATE KEY UPDATE report_count = report_count + 1, threat_category = VALUES(threat_category)`,
-        [phone, countryCode, phoneCategory]
-      );
-      addedPhones.push(phone);
-    } catch (err) {
-      console.warn('⚠️ Error inserting reported phone into DB:', err.message);
-    }
-  }
-
-  // 5. Upsert into email_threat_records
-  for (const email of foundEmails) {
-    try {
-      const domain = email.includes('@') ? email.split('@')[1] : '';
-      const notes = (title || description).slice(0, 255);
-      await db.execute(
-        `INSERT INTO email_threat_records (email_address, domain, threat_category, report_count, is_scam, notes)
-         VALUES (?, ?, ?, 1, 1, ?)
-         ON DUPLICATE KEY UPDATE report_count = report_count + 1, notes = VALUES(notes)`,
-        [email, domain, emailCategory, notes]
-      );
-      addedEmails.push(email);
-    } catch (err) {
-      console.warn('⚠️ Error inserting reported email into DB:', err.message);
-    }
-  }
-
-  console.log(`📢 Citizen Fraud Report Processed: Automatically indexed ${addedPhones.length} phone(s), ${addedEmails.length} email(s) into database`);
-
-  return res.json({
-    success: true,
-    message: 'Report received and threat signatures automatically indexed into database',
-    indexedPhones: addedPhones,
-    indexedEmails: addedEmails
-  });
 });
 
 // =========================================================================

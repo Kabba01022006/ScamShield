@@ -9,7 +9,7 @@ import {
 // ── CONTENT (edit text here, no need to touch the layout below) ──────────────
 
 const STEPS = [
-  { icon: Search,   title: 'Check',   desc: 'Search a phone number, email, or link to see if others have reported it.', to: '/search'  },
+  { icon: Search,   title: 'Check',   desc: 'Search a phone number, email, or link to see if others have reported it.', to: '/database' },
   { icon: Cpu,      title: 'Analyze', desc: 'Paste a suspicious message and the AI Scanner shows its risk level and red flags.', to: '/analyze' },
   { icon: FilePlus2, title: 'Report', desc: 'Got scammed or targeted? Report it so others are warned.', to: '/report' },
 ];
